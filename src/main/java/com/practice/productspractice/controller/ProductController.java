@@ -5,9 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
-import java.util.stream.Stream;
 
 @RequestMapping("/products")
 @RestController
@@ -31,17 +29,10 @@ public class ProductController {
 
     @GetMapping
     public List<Product> getProducts(@RequestParam(required = false) Integer from, @RequestParam(required = false) Integer to) {
-        Stream<Product> currentStream = products.stream();
-
-        if (from != null) {
-            currentStream = currentStream.filter(product -> product.getPrice() > from);
-        }
-
-        if (to != null) {
-            currentStream = currentStream.filter(product -> product.getPrice() < to);
-        }
-
-        return currentStream.toList();
+        return products.stream()
+                .filter(product -> from == null || product.getPrice() > from)
+                .filter(product -> to == null || product.getPrice() < to)
+                .toList();
     }
     //   /products?from=500&to=1000  - все товары от 500 до 1000
     //   /products?from=500          - все товары от 500
